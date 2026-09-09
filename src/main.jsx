@@ -1,11 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './assets/styles/global.css'
+import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import RootLayout from './components/layouts/RootLayout.jsx'
 import Product from './pages/Product.jsx'
 import ProductDetail from './pages/ProductDetail.jsx'
+import AddProduct from './pages/AddProduct.jsx'
+
 
 const router = createBrowserRouter([
   {
@@ -16,12 +18,16 @@ const router = createBrowserRouter([
         element: <App />
       },
       {
-        path: '/products',
+        path: '/product',
         element: <Product />
       },
       {
-        path: '/products/:id',
+        path: '/product/:id',
         element: <ProductDetail />
+      },
+      {
+        path: '/add-product',
+        element: <AddProduct />
       }
     ]
   }

@@ -1,12 +1,20 @@
 import { Button } from 'flowbite-react'
-import React from 'react'
-import { getAllProducts } from './services/productApi'
+import { getProductById } from './services/productApi'
+import { useState } from 'react';
 
 function App() {
-  getAllProducts();
+
+  getProductById(1)
+
+  const [form, setForm] = useState([{
+    title: 1,
+    desc: 'John Doe',
+    price: 100
+  }]);
+
   return (
     <div>
-      <h1 className='font-bold text-3xl'>My App</h1>
+      <h1 className='font-bold text-3xl'>Homepage</h1>
     </div>
   )
 }

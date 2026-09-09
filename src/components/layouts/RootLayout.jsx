@@ -1,15 +1,15 @@
-import { Outlet } from "react-router";
-import FooterComponent from "./FooterComponent";
-import NavbarComponent from "./NavbarComponent";
+import NavbarComponent from './NavbarComponent'
+import { Outlet } from 'react-router'
+import FooterComponent from './FooterComponent'
 
 export default function RootLayout() {
   return (
-    <>
+    <div className="max-w-8xl flex flex-col">
       <NavbarComponent />
-      <main>
+      <main className="mx-auto grow container">
         <Outlet />
       </main>
       <FooterComponent />
-    </>
+    </div>
   )
 }
