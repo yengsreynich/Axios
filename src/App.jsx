@@ -1,10 +1,10 @@
 import { Button } from 'flowbite-react'
-import { getProductById } from './services/productApi'
+import { deleteProduct, getProductById } from './services/productApi'
 import { useState } from 'react';
 
 function App() {
 
-  getProductById(1)
+  deleteProduct();
 
   const [form, setForm] = useState([{
     title: 1,

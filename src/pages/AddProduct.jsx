@@ -1,12 +1,29 @@
-import React, { useState } from 'react'
-import { Checkbox, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import React, { useEffect, useState } from 'react'
+import { Button, Checkbox, Modal, ModalBody, ModalHeader, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
 import ProductForm from '../components/base/ProductForm'
-import { createProduct } from '../services/productApi'
+import { createProduct, deleteProduct, getAllProducts } from '../services/productApi'
+import { Info } from 'lucide-react';
 
 function AddProduct() {
     const [isLoading, setLoading] = useState(false);
     const [product, setProduct] = useState([]);
+    const [deleteId, setDeleteId] = useState(null);
+    console.log('Delete id', deleteId)
+    // fetch all data
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await getAllProducts();
+                setProduct(response);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
 
+        fetchProducts();
+    }, []);
+
+    // create function
     const handleSubmit = async (formData) => {
         try {
             setLoading(true)
@@ -18,6 +35,19 @@ function AddProduct() {
             setLoading(false)
         }
     }
+
+    const handleDelete = async (productId) => {
+        try {
+            const response = await deleteProduct(productId);
+            console.log(response);
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        } finally {
+            setProduct((product) => product.filter((p) => p.id !== productId));
+            setDeleteId(null);
+        }
+    } 
+
     return (
         <div>
             <ProductForm onSubmit={handleSubmit} isLoading={isLoading} />
@@ -26,22 +56,28 @@ function AddProduct() {
                     <Table hoverable>
                         <TableHead>
                             <TableRow>
+                                <TableHeadCell>ID</TableHeadCell>
                                 <TableHeadCell>Title</TableHeadCell>
                                 <TableHeadCell>Price</TableHeadCell>
                                 <TableHeadCell>Description</TableHeadCell>
-                                <TableHeadCell>
-                                    <span className="sr-only">Edit</span>
-                                </TableHeadCell>
+                                <TableHeadCell>Actions</TableHeadCell>
                             </TableRow>
                         </TableHead>
                         <TableBody className="divide-y">
                             {product.map((product) => (
-                                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800" key={product.id}>
+                                    <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                        {product.id}
+                                    </TableCell>
                                     <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                         {product.title}
                                     </TableCell>
                                     <TableCell>{product.price}</TableCell>
                                     <TableCell>{product.description}</TableCell>
+                                    <TableCell className='flex gap-2'>
+                                        <Button className='cursor-pointer'>Edit</Button>
+                                        <Button color="red" className='cursor-pointer' onClick={() => setDeleteId(product.id)}>Delete</Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -50,6 +86,26 @@ function AddProduct() {
             ) : (
                 <p className="text-center text-gray-500">No products.</p>
             )}
+
+            <Modal show={deleteId !== null} size="md" onClose={() => setDeleteId(null)} popup>
+                <ModalHeader />
+                <ModalBody>
+                    <div className="text-center">
+                        <Info />
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                            Are you sure you want to delete this product?
+                        </h3>
+                        <div className="flex justify-center gap-4">
+                            <Button color="red" onClick={() => handleDelete(deleteId)}>
+                                Yes, I'm sure
+                            </Button>
+                            <Button color="alternative" onClick={() => setDeleteId(null)}>
+                                No, cancel
+                            </Button>
+                        </div>
+                    </div>
+                </ModalBody>
+            </Modal>
         </div>
     )
 }

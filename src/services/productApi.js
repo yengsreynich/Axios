@@ -24,3 +24,12 @@ export async function createProduct(payload) {
     const data = await response.json();
     return data;
 }
+
+export async function deleteProduct(id) {
+    const response = await fetch(`${baseUrl}/products/${id}`, {
+        method: 'DELETE'
+    });
+
+    const data = await response.json();
+    return data;
+}
