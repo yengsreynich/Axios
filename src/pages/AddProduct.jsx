@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Checkbox, Modal, ModalBody, ModalHeader, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
 import ProductForm from '../components/base/ProductForm'
-import { createProduct, deleteProduct, getAllProducts } from '../services/productApi'
+import { createProduct, deleteProduct, getAllProducts, updateProduct } from '../services/productApi'
 import { Info } from 'lucide-react';
 
 function AddProduct() {
     const [isLoading, setLoading] = useState(false);
     const [product, setProduct] = useState([]);
     const [deleteId, setDeleteId] = useState(null);
-    console.log('Delete id', deleteId)
+    const [editData, setEditData] = useState(null);
+    
     // fetch all data
     useEffect(() => {
         const fetchProducts = async () => {
@@ -27,10 +28,26 @@ function AddProduct() {
     const handleSubmit = async (formData) => {
         try {
             setLoading(true)
-            const newProduct = await createProduct(formData);
-            setProduct((prevProducts) => [newProduct, ...prevProducts]);
+            if (editData) {
+                // update product
+                const updateProduct = await updateProduct(editData.id, formData);
+                setProduct((prevProducts) =>
+                    prevProducts.map((product) =>
+                        product.id === editData.id ? updateProduct : product
+                    )
+                );
+                setEditData(null);
+            } else {
+                const newProduct = await createProduct(formData);
+                setProduct((prevProducts) => [newProduct, ...prevProducts]); 
+            }
         } catch (error) {
-            throw new Error('Error creating product:', error);
+             if (editData) {
+                setProduct((currentProducts) =>
+                    currentProducts.map((p) => p.id === editData.id ? { ...p, ...formData } : p)
+                );
+                setEditData(null);
+            }    
         } finally {
             setLoading(false)
         }
@@ -50,7 +67,7 @@ function AddProduct() {
 
     return (
         <div>
-            <ProductForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <ProductForm onSubmit={handleSubmit} isLoading={isLoading} editData={editData} />
             {product.length > 0 ? (
                 <div className="overflow-x-auto">
                     <Table hoverable>
@@ -75,7 +92,7 @@ function AddProduct() {
                                     <TableCell>{product.price}</TableCell>
                                     <TableCell>{product.description}</TableCell>
                                     <TableCell className='flex gap-2'>
-                                        <Button className='cursor-pointer'>Edit</Button>
+                                        <Button className='cursor-pointer' onClick={() => setEditData(product)}>Edit</Button>
                                         <Button color="red" className='cursor-pointer' onClick={() => setDeleteId(product.id)}>Delete</Button>
                                     </TableCell>
                                 </TableRow>

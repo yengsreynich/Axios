@@ -1,13 +1,29 @@
 import { Label, Textarea, TextInput, Button } from "flowbite-react";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-export default function ProductForm({ onSubmit, isLoading }) {
+export default function ProductForm({ onSubmit, isLoading, editData }) {
 
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         price: ''
     });
+
+    useEffect(() => {
+        if (editData) {
+            setFormData({
+                title: editData.title,
+                description: editData.description,
+                price: editData.price
+            });
+        } else {
+            setFormData({
+                title: '',
+                description: '',
+                price: ''
+            });
+        }
+    }, [editData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -24,7 +40,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
 
     return (
         <div className="w-full px-4 py-8 sm:px-6">
-            <h1>Add Product</h1>
+            <h1>{editData ? 'Edit Product' : 'Add Product'}</h1>
             <form onSubmit={handleSubmit} className="flex max-w-md flex-col gap-4">
                 <div>
                     <div className="mb-2 block">
@@ -35,6 +51,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                         name="title"
                         placeholder='Input title'
                         onChange={handleChange}
+                        value={formData.title}
                         required
                     />
                 </div>
@@ -49,7 +66,7 @@ export default function ProductForm({ onSubmit, isLoading }) {
                         type="number"
                         placeholder='Input price'
                         onChange={handleChange}
-
+                        value={formData.price}
                         required
                     />
                 </div>
@@ -62,12 +79,13 @@ export default function ProductForm({ onSubmit, isLoading }) {
                         id="description"
                         name="description"
                         rows={4}
+                        value={formData.description}
                         onChange={handleChange}
                     />
                 </div>
 
                 <Button type="submit" className="bg-cyan-700 hover:bg-cyan-800">
-                    {isLoading ? 'Loading...' : 'Create Product'}
+                    {isLoading ? 'Loading...' : editData ? 'Update Product' : 'Create Product'}
                 </Button>
             </form>
         </div>

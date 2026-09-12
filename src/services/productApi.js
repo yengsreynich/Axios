@@ -1,10 +1,10 @@
+import api from "..//api/apifetch";
+
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export async function getAllProducts() {
-    const response = await fetch(`${baseUrl}/products`)
-        .then((res) => res.json())
-
-    return response?.products;
+    const response = await AudioParam.get('products');
+    return response.data.products;
 }
 
 export async function getProductById(id) {
@@ -30,6 +30,17 @@ export async function deleteProduct(id) {
         method: 'DELETE'
     });
 
+    const data = await response.json();
+    return data;
+}
+export async function updateProduct (id, payload) {
+    const response = await fetch (`${baseUrl}/products/${id}`,{
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    });
     const data = await response.json();
     return data;
 }
