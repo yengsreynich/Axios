@@ -1,48 +1,28 @@
-// src/pages/product/Product.jsx
-import { useEffect, useState } from 'react';
-import ProductCard from '../components/base/ProductCard';
+import React from 'react'
+import ProductCard from '../components/base/ProductCard'
 import { getAllProducts } from '../services/productApi';
 
 export default function Product() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = React.useState([]);
 
-  // fetch all data
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await getAllProducts();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching products:', error);  
-      } finally {
-        setLoading(false);
-      }
-    };
+      const data = await getAllProducts();
+      setProducts(data);
+    }
+
     fetchProducts();
   }, []);
 
-
   return (
-    <div className='w-full px-4 py-8 sm:px-6'>
-      <h1 className='font-bold text-3xl mb-8'>Product Page</h1>
-      
-      <div className="flex flex-col gap-8">
-        {/* Create Form */}
-        <div className="w-full">
-          
-        </div>
+    <div className='w-full px-4 py-4 sm:px-6'>
+      <h1 className='font-bold text-3xl'>Product Page</h1>
 
-        {/* Product Grid */}
-        <div className="w-full">
-          <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4'>
-            {products?.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
+      <div className='mt-4 grid grid-cols-4 gap-4'>
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
     </div>
-  );
+  )
 }

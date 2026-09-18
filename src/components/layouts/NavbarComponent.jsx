@@ -10,7 +10,9 @@ export default function NavbarComponent() {
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Flowbite React</span>
       </NavbarBrand>
       <div className="flex md:order-2">
-        <Button>Get started</Button>
+        <Button>
+          <NavLink to='/login'>Login</NavLink>
+        </Button>
         <NavbarToggle />
       </div>
       <NavbarCollapse>

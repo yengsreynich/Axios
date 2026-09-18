@@ -1,25 +1,53 @@
-import { useParams, Link } from "react-router"
+import { useParams, Link } from "react-router";
 import { getProductById } from "../services/productApi";
 import { useEffect, useState } from "react";
+import api from "../api/apiFetch";
 
 export default function ProductDetail() {
   // 1 get id from url params
   const { id } = useParams();
   // store product detail in local state
-  const [product, setProduct] = useState([]);
-  
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchProductDetail = async () => {
-      const data = await getProductById(id);
-      setProduct(data);
+      try {
+        setLoading(true);
+        const data = await getProductById(id);
+        setProduct(data);
+      } catch (error) {
+        console.error("Error fetching product detail:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchProductDetail();
-  }, []);
+    if (id) {
+      fetchProductDetail();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="p-8 text-center text-gray-500">
+        Loading product detail...
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="p-8 text-center text-red-500">Product not found!</div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <Link to="/products" className="text-cyan-700 hover:underline mb-6 inline-block">
+      <Link
+        to="/products"
+        className="text-cyan-700 hover:underline mb-6 inline-block"
+      >
         &larr; Back to Products
       </Link>
 
@@ -48,5 +76,5 @@ export default function ProductDetail() {
         </div>
       </div>
     </div>
-  )
+  );
 }

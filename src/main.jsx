@@ -7,6 +7,7 @@ import RootLayout from './components/layouts/RootLayout.jsx'
 import Product from './pages/Product.jsx'
 import ProductDetail from './pages/ProductDetail.jsx'
 import AddProduct from './pages/AddProduct.jsx'
+import Login from './pages/auth/Login.jsx'
 
 
 const router = createBrowserRouter([
@@ -28,8 +29,12 @@ const router = createBrowserRouter([
       {
         path: '/add-product',
         element: <AddProduct />
-      }
+      },
     ]
+  },
+  {
+        path: '/login',
+        element: <Login/>
   }
 ]);
 

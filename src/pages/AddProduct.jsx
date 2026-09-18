@@ -30,10 +30,10 @@ function AddProduct() {
             setLoading(true)
             if (editData) {
                 // update product
-                const updateProduct = await updateProduct(editData.id, formData);
+                const updatedProduct = await updateProduct(editData.id, formData);
                 setProduct((prevProducts) =>
                     prevProducts.map((product) =>
-                        product.id === editData.id ? updateProduct : product
+                        product.id === editData.id ? updatedProduct : product
                     )
                 );
                 setEditData(null);
